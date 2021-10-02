@@ -3,16 +3,107 @@ import Layout from '../components/Layout.astro';
 ---
 
 <style>
-main {
+.products {
+  display: grid;
+  margin: 0 auto;
+  max-width: 1280px;
+}
+
+@media (min-width: 700px) {
+  .products {
+    --maxWidth: 50%;
+    grid-template-columns: repeat(2, min(var(--maxWidth), 640px));
+  }
+}
+
+@media (min-width: 1280px) {
+  .products {
+    --maxWidth: 50% - 1rem;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+}
+
+.product {
+  padding-bottom: 3rem;
+}
+
+.image-wrapper {
   align-items: center;
+  aspect-ratio: 4 / 3;
+  background: var(--orange);
   display: flex;
-  height: 100vh;
   justify-content: center;
+}
+
+.product:nth-child(even) > .image-wrapper {
+  background: var(--blue);
+}
+
+.image-wrapper img {
+  display: block;
+  max-width: 480px;
+  width: 100%;
+}
+
+.details {
+  padding: 1.5rem max(5vw, 1rem);
+}
+
+.heading {
+  font-size: clamp(1.25rem, 4.5vw, 1.375rem);
+  margin-top: 0;
+}
+
+.button {
+  background-image: var(--gradient);
+  border: 4px solid var(--black);
+  border-radius: 0.875rem;
+  box-shadow: 0.25em 0.25em 0 var(--black);
+  color: var(--black);
+  display: block;
+  font-family: var(--fontHeading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  padding: 1rem;
+  text-align: center;
+  text-decoration: none;
 }
 </style>
 
 <Layout title="Jamstack Conf 2021 Swag Site">
-  <main>
-    <h1>// TODO: build conf swag site</h1>
+  <main class="products">
+    <section class="product">
+      <div class="image-wrapper">
+        <img src="https://res.cloudinary.com/netlify/image/upload/f_auto,q_auto/v1633154429/slap-bracelet.png" alt="Jamstack Conf 2021 slap bracelet" />
+      </div>
+      <div class="details">
+        <h2 class="heading">Jamstack Conf 2021 Slap Bracelet</h2>
+        <p>
+          What better way to commemorate your Jamstack Conf experience than a 
+          freakin’ slap bracelet? <strong>This item is limited to the first 
+          1,000 attendees to claim it because some things are too powerful for 
+          mass production.</strong>
+        </p>
+        <a class="button" href="#claim">Claim One for Free!</a>
+      </div>
+    </section>
+
+    <section class="product">
+      <div class="image-wrapper">
+        <img src="https://res.cloudinary.com/netlify/image/upload/f_auto,q_auto/v1633154429/slap-bracelet.png" alt="Jamstack Conf 2021 slap bracelet" />
+      </div>
+      <div class="details">
+        <h2 class="heading">Jamstack Conf 2021 Swag Pack</h2>
+        <p>
+          What better way to commemorate your Jamstack Conf experience than a 
+          freakin’ slap bracelet? <strong>This item is limited to the first 
+          1,000 attendees to claim it because some things are too powerful for 
+          mass production.</strong>
+        </p>
+        <a class="button" href="#claim">Purchase for $40</a>
+      </div>
+    </section>
   </main>
 </Layout>
