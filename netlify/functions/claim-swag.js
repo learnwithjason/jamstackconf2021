@@ -20,8 +20,9 @@ async function sendFaunaRequest({ query, variables }) {
     };
   }
 
-  const { data } = await result.json();
+  const { data, errors } = await result.json();
 
+  console.log(errors);
   return data;
 }
 
@@ -39,6 +40,24 @@ async function getClaimByEmail(email) {
   });
 
   return { couponCode: claim?.couponCode, count };
+}
+
+async function createClaim(email) {
+  const data = await sendFaunaRequest({
+    query: `
+      mutation CreateClaim($email: String!) {
+        claim: createClaim(email: $email, couponCode: "JAMSLAP") {
+          email
+          couponCode
+        }
+      }
+    `,
+    variables: { email },
+  });
+
+  console.log({ data });
+
+  return { couponCode: data.claim?.couponCode };
 }
 
 async function getRegistrationByEmail(email) {
@@ -72,7 +91,7 @@ async function sendShopifyRequest({ query, variables }) {
     {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/graphql',
+        'Content-Type': 'application/json',
         'X-Shopify-Access-Token': process.env.SHOPIFY_ADMIN_PASSWORD,
       },
       body: JSON.stringify({
@@ -91,7 +110,6 @@ async function sendShopifyRequest({ query, variables }) {
   }
 
   const { data } = await result.json();
-  console.log({ result, data });
 
   return data;
 }
@@ -121,7 +139,7 @@ async function loadOrCreateShopifyCustomer(email) {
   });
 
   if (customerCreate && customerCreate.customer) {
-    return customer;
+    return customerCreate.customer;
   }
 
   // If we get here, the customer already exists; look up the ID and update them!
@@ -199,6 +217,9 @@ export async function handler(event) {
   if (count >= 1000) {
     return {
       statusCode: 503,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         message:
           'Unfortunately, you were not one of the first 1,000 people to claim a slap bracelet.',
@@ -213,6 +234,9 @@ export async function handler(event) {
   if (!registration) {
     return {
       statusCode: 401,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         message:
           'The provided email was not registered to attend Jamstack Conf.',
@@ -223,23 +247,27 @@ export async function handler(event) {
   // 6. Associate this email with a Shopify discount code for the bracelet
   const customer = await loadOrCreateShopifyCustomer(email);
 
-  console.log({ customer });
-
   if (customer === false) {
     return {
       statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         message: 'There was an issue updating Shopify. Please try again.',
       }),
     };
   }
 
-  // 7. Store the claim in Fauna with the email/discount code
+  // 7. Store the claim in Fauna with the email/coupon code
+  const claim = await createClaim(email);
 
-  // 8. Return the discount code
-
+  // 8. Return the coupon code
   return {
     statusCode: 200,
-    body: 'ok',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ couponCode: claim.couponCode }),
   };
 }
