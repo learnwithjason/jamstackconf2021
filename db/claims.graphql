@@ -1,0 +1,14 @@
+type Claim @collection(name: "Claims") {
+  email: String! @unique
+  couponCode: String! @unique
+}
+
+type Query {
+  getClaimByEmail(email: String!): Claim
+  getClaimCount: Int @resolver(name: "CountClaims")
+}
+
+type Mutation {
+  createClaim(email: String!, couponCode: String!): Claim
+    @resolver(name: "CreateClaim")
+}
