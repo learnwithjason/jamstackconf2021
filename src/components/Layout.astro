@@ -1,4 +1,6 @@
 ---
+import Cart from './cart.jsx';
+
 const { title } = Astro.props;
 ---
 <!DOCTYPE html>
@@ -64,9 +66,120 @@ const { title } = Astro.props;
     }
 
     header {
+      align-items: center;
       background: var(--black);
       border-bottom: 4px solid var(--pink);
+      display: flex;
+      justify-content: space-between;
       padding: 1rem max(5vw, 1rem) 0.625rem;
+    }
+
+    .cart {
+    }
+
+    .icon {
+      align-items: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      gap: 0.25rem;
+      justify-content: center;
+    }
+
+    .icon img {
+      display: block;
+      width: 2rem;
+    }
+
+    .count {
+      background: var(--teal);
+      border-radius: 50%;
+      display: block;
+      font-family: var(--fontHeading);
+      font-size: 0.875rem;
+      font-weight: 600;
+      height: 1.5rem;
+      padding: 0.125rem;
+      text-align: center;
+      width: 1.5rem;
+    }
+
+    .drawer {
+      background: var(--white);
+      height: 100vh;
+      overflow-y: scroll;
+      position: fixed;
+      right: calc(-1 * min(90vw, 400px));
+      top: 0;
+      transition: all 150ms ease-in-out;
+      width: min(90vw, 400px);
+    }
+
+    .drawer.open {
+      box-shadow: 0 0 10px var(--darkGrey);
+      right: 0;
+    }
+
+    .close {
+      background: transparent;
+      border: none;
+      color: var(--black);
+      cursor: pointer;
+      font-family: var(--fontHeading);
+      font-size: 1rem;
+      font-variant: all-petite-caps;
+      letter-spacing: 0.1em;
+      margin: 0.5rem;
+    }
+
+    .drawer h3 {
+      margin: 2rem 1.5rem 0;
+    }
+
+    .drawer ul {
+      border-top: 1px solid var(--lightGrey);
+      list-style: none;
+      margin: 1rem 0;
+      padding: 0;
+    }
+
+    .drawer li {
+      border-bottom: 1px solid var(--lightGrey);
+      font-size: 0.875rem;
+      margin: 0;
+      padding: 1rem 1.5rem;
+    }
+
+    .drawer p {
+      margin: 0;
+    }
+
+    .drawer li.total {
+      border-bottom: none;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .drawer .button {
+      margin: 0 1.5rem;
+      width: auto;
+    }
+
+    .drawer .no-items {
+      color: var(--darkGrey);
+      margin: 1rem 1.5rem;
+      font-weight: 300;
+    }
+
+    .drawer .empty-cart {
+      background: transparent;
+      border: 0;
+      color: var(--darkGrey);
+      cursor: pointer;
+      display: block;
+      margin: 2rem auto;
+      text-decoration: underline;
     }
 
     h1,
@@ -109,6 +222,7 @@ const { title } = Astro.props;
     <a href="/">
       <img src="/images/header.svg" alt="Jamstack Conf 2021" />
     </a>
+    <Cart client:load />
   </header>
 
   <slot />

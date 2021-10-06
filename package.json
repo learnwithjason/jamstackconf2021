@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@netlify/functions": "^0.7.2",
+    "@sendgrid/mail": "^7.4.7",
     "node-fetch": "^3.0.0"
   }
 }

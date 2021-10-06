@@ -55,8 +55,6 @@ async function createClaim(email) {
     variables: { email },
   });
 
-  console.log({ data });
-
   return { couponCode: data.claim?.couponCode };
 }
 
@@ -85,7 +83,7 @@ async function getRegistrationByEmail(email) {
   return registrations[0];
 }
 
-async function sendShopifyRequest({ query, variables }) {
+export async function sendShopifyRequest({ query, variables }) {
   const result = await fetch(
     'https://netlify.myshopify.com/admin/api/2021-10/graphql.json',
     {
