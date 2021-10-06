@@ -9,7 +9,12 @@
     "preview": "astro preview"
   },
   "devDependencies": {
-    "astro": "^0.20.9",
-    "@astrojs/renderer-preact": "^0.2.2"
+    "@astrojs/renderer-preact": "^0.2.2",
+    "astro": "^0.20.9"
+  },
+  "dependencies": {
+    "@netlify/functions": "^0.7.2",
+    "@sendgrid/mail": "^7.4.7",
+    "node-fetch": "^3.0.0"
   }
 }

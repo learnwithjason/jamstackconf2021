@@ -1,5 +1,6 @@
 ---
 import Layout from '../components/Layout.astro';
+import AddToCart from '../components/add-to-cart.jsx';
 ---
 
 <style>
@@ -55,7 +56,19 @@ import Layout from '../components/Layout.astro';
   margin-top: 0;
 }
 
-.button {
+:global(.options) {
+  border: 2px solid var(--black);
+  border-radius: 0.25rem;
+  color: var(--black);
+  display: block;
+  font-family: var(--fontHeading);
+  font-size: 1rem;
+  margin-top: 2rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+}
+
+:global(.button) {
   background-image: var(--gradient);
   border: 4px solid var(--black);
   border-radius: 0.875rem;
@@ -69,6 +82,11 @@ import Layout from '../components/Layout.astro';
   padding: 1rem;
   text-align: center;
   text-decoration: none;
+  width: 100%;
+}
+
+:global(.options) + :global(.button) {
+  margin-top: 1rem;
 }
 </style>
 
@@ -86,23 +104,38 @@ import Layout from '../components/Layout.astro';
           1,000 attendees to claim it because some things are too powerful for 
           mass production.</strong>
         </p>
-        <a class="button" href="#claim">Claim One for Free!</a>
+        <AddToCart
+          variantId="Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTAyMzYxMTE0MjMwMA=="
+          buttonText="Claim One for Free!"
+          client:idle
+        />
       </div>
     </section>
 
     <section class="product">
       <div class="image-wrapper">
-        <img src="https://res.cloudinary.com/netlify/image/upload/f_auto,q_auto/v1633154429/slap-bracelet.png" alt="Jamstack Conf 2021 slap bracelet" />
+        <img src="https://res.cloudinary.com/netlify/image/upload/f_auto,q_auto/v1633499051/swag-pack.jpg" alt="Jamstack Conf 2021 slap bracelet" />
       </div>
       <div class="details">
         <h2 class="heading">Jamstack Conf 2021 Swag Pack</h2>
         <p>
-          What better way to commemorate your Jamstack Conf experience than a 
-          freakin’ slap bracelet? <strong>This item is limited to the first 
-          1,000 attendees to claim it because some things are too powerful for 
-          mass production.</strong>
+          T-shirts, stickers, bath bombs, pop sockets, and more! <strong>Only 400 swag packs are available; grab one quick!</strong>
         </p>
-        <a class="button" href="#claim">Purchase for $40</a>
+        <AddToCart
+          buttonText="Purchase for $40"
+          variantId="Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTAzNTI4MzU5NTQyMA=="
+          options={[
+            { label: 'XS', id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTAzNTI4MzU5NTQyMA==' },
+            { label: 'SM', id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTAzNTI4MzYyODE4OA==' },
+            { label: 'MD', id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTAzNTI4MzY2MDk1Ng==' },
+            { label: 'LG', id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTAzNTI4MzY5MzcyNA==' },
+            { label: 'XL', id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTAzNTI4MzcyNjQ5Mg==' },
+            { label: '2X', id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTAzNTI4Mzc1OTI2MA==' },
+            { label: '3X', id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTAzNTI4Mzc5MjAyOA==' },
+            { label: '4X', id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTAzNTI4MzgyNDc5Ng==' },
+          ]}
+          client:idle
+        />
       </div>
     </section>
   </main>
