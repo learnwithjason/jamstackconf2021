@@ -8,26 +8,7 @@ export default function AddToCart({ variantId, buttonText, options = false }) {
   }
 
   async function addToCart() {
-    const localCartData = JSON.parse(
-      window.localStorage.getItem('jamstackconf:shopify:cart'),
-    );
-
-    if (!localCartData.cartId) {
-      console.error('There was an error loading your cart!');
-      return;
-    }
-
-    const result = await fetch('/api/add-to-cart', {
-      method: 'POST',
-      body: JSON.stringify({ cartId: localCartData.cartId, variantId: id }),
-    });
-
-    if (!result.ok) {
-      console.error('There was a problem adding the item to the cart.');
-      return;
-    }
-
-    window.localStorage.setItem('jamstackconf:shopify:state', 'dirty');
+    // TODO
   }
 
   // TODO: check for quantity and set to sold out if 0

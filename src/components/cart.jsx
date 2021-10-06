@@ -4,60 +4,12 @@ export default function Cart() {
   const [cart, setCart] = useState({ id: null, lines: [] });
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    async function getCart() {
-      let localCartData = JSON.parse(
-        window.localStorage.getItem('jamstackconf:shopify:cart'),
-      );
-
-      if (localCartData) {
-        const existingCart = await fetch(
-          `/api/load-cart?cartId=${localCartData.cartId}`,
-        ).then((res) => res.json());
-
-        setCart({
-          id: localCartData.cartId,
-          checkoutUrl: localCartData.checkoutUrl,
-          estimatedCost: existingCart.cart.estimatedCost,
-          lines: existingCart.cart.lines.edges,
-        });
-
-        return;
-      }
-
-      localCartData = await fetch('/api/create-cart').then((res) => res.json());
-
-      setCart({
-        id: localCartData.cartId,
-        checkoutUrl: localCartData.checkoutUrl,
-        estimatedCost: null,
-        lines: [],
-      });
-
-      window.localStorage.setItem(
-        'jamstackconf:shopify:cart',
-        JSON.stringify(localCartData),
-      );
-    }
-
-    getCart();
-
-    setInterval(() => {
-      const state = window.localStorage.getItem('jamstackconf:shopify:state');
-      if (state && state === 'dirty') {
-        getCart();
-        window.localStorage.setItem('jamstackconf:shopify:state', 'clean');
-      }
-    }, 500);
-  }, []);
-
   function toggleCart() {
     setOpen(!open);
   }
 
   function emptyCart() {
-    window.localStorage.removeItem('jamstackconf:shopify:cart');
-    window.localStorage.setItem('jamstackconf:shopify:state', 'dirty');
+    // TODO
   }
 
   let cost = Number(cart?.estimatedCost?.totalAmount?.amount || 0);
