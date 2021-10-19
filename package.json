@@ -10,11 +10,15 @@
   },
   "devDependencies": {
     "@astrojs/renderer-preact": "^0.2.2",
+    "@astrojs/renderer-react": "^0.2.2",
     "astro": "^0.20.9"
   },
   "dependencies": {
+    "@algolia/autocomplete-js": "^1.4.1",
+    "@algolia/autocomplete-theme-classic": "^1.4.1",
     "@netlify/functions": "^0.7.2",
     "@sendgrid/mail": "^7.4.7",
+    "algoliasearch": "^4.10.5",
     "node-fetch": "^3.0.0"
   }
 }

@@ -1,9 +1,14 @@
 ---
 import Layout from '../components/Layout.astro';
 import AddToCart from '../components/add-to-cart.jsx';
+import Autocomplete from '../components/autocomplete.jsx';
 ---
 
 <style>
+.container {
+  max-width:1268px;
+  margin:0 auto;
+}
 .products {
   display: grid;
   margin: 0 auto;
@@ -91,7 +96,17 @@ import AddToCart from '../components/add-to-cart.jsx';
 </style>
 
 <Layout title="Jamstack Conf 2021 Swag Site">
+  <section className="container" style="max-width: 1268px; margin: 1rem auto">
+    <Autocomplete 
+      client:visible="react" 
+      placeholder="Try /bag" 
+      openOnFocus   
+      defaultActiveItemId={0}  
+    />
+  </section>
+
   <main class="products">
+
     <section class="product">
       <div class="image-wrapper">
         <img src="https://res.cloudinary.com/netlify/image/upload/f_auto,q_auto/v1633154429/slap-bracelet.png" alt="Jamstack Conf 2021 slap bracelet" />
