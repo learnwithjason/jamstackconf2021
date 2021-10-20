@@ -17,12 +17,20 @@ function getQueryPattern(query, flags = "i") {
   return pattern;
 }
 
+function showMessage(message) {
+  console.log(message);
+  // Display a message on page
+
+}
+
+
+
 function highlight(text, pattern) {
   const tokens = text.split(pattern);
 
   return tokens.map((token) => {
     if (!pattern.test("") && pattern.test(token)) {
-      return <mark>{token}</mark>;
+      return <mark key={0}>{token}</mark>;
     }
 
     return token;
@@ -59,10 +67,22 @@ export default function Autocomplete(props) {
                 label: "/bag",
                 placeholder: "  yourAddress@email.com",
                 onSelect() {
+                  // Get the email from the query
                   const ticketId = query.split(this.label + " ");
-                  console.log(ticketId[1]);
-                  // Some function to send this ID
-                  // to the serverless function
+
+                  // Send the email address to the claim-swag serverless function
+                  fetch("/.netlify/functions/claim-swag", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      email: ticketId[1],
+                    }),
+                  })
+                    .then((res) => res.json())
+                    .then((data) => showMessage(data.message))
+                    .catch((err) => showMessage(err))       
                 },
                 icon: (
                   <svg

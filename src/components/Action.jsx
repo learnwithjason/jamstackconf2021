@@ -1,8 +1,9 @@
 import React from 'react'
 export function Action({ hit }) {
     // Component to display the items
+    console.log(hit.__autocomplete_id)
     return (
-      <div className="aa-ItemWrapper">
+      <div key={hit.__autocomplete_id} className="aa-ItemWrapper">
         <div className="aa-ItemContent">
           <div className="aa-ItemIcon">{hit.icon}</div>
           <div className="aa-ItemContentBody">
