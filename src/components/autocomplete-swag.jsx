@@ -3,7 +3,12 @@ import { render } from "react-dom";
 import { autocomplete } from "@algolia/autocomplete-js";
 import "@algolia/autocomplete-theme-classic";
 import {Action} from './Action'
-
+import { getAlgoliaResults } from "@algolia/autocomplete-js";
+import algoliasearch from "algoliasearch/lite";
+const searchClient = algoliasearch(
+  "NSG548YGWI",
+  "252979f55a71ee0c9de0adb8f88d5276"
+);
 function getQueryPattern(query, flags = "i") {
   const pattern = new RegExp(
     `(${query
@@ -69,7 +74,7 @@ export default function Autocomplete(props) {
                 onSelect() {
                   // Get the email from the query
                   const ticketId = query.split(this.label + " ");
-                  showMessage(`You selected ${ticketId[1]}`);
+
                   // Send the email address to the claim-swag serverless function
                   fetch("/.netlify/functions/claim-swag", {
                     method: "POST",
@@ -81,7 +86,7 @@ export default function Autocomplete(props) {
                     }),
                   })
                     .then((res) => res.json())
-                    .then((data) => showMessage(ticketId))
+                    .then((data) => showMessage(data.message))
                     .catch((err) => showMessage(err))       
                 },
                 icon: (
@@ -127,6 +132,34 @@ export default function Autocomplete(props) {
             item.onSelect(params);
             setQuery("");
           },
+        },
+        {
+          sourceId: "swag",
+          getItemUrl({item}) {
+            return item.url
+          },
+          getItems() {
+            return getAlgoliaResults({
+              searchClient,
+              queries: [
+                {
+                  indexName: "swag",
+                  query,
+                  params: {
+                    hitsPerPage: 3
+                  }
+                }
+              ]
+            });
+          },
+          templates: {
+            header() {
+              return <h2>More Swag</h2>;
+            },
+            item({ item, components }) {
+              return <a href={item.url}><components.Highlight hit={item} attribute="title" /></a>;
+            }
+          }
         }
       ],
       ...props
