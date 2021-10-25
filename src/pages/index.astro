@@ -1,6 +1,7 @@
 ---
 import Layout from '../components/Layout.astro';
 import AddToCart from '../components/add-to-cart.jsx';
+import Autocomplete from '../components/autocomplete.jsx';
 ---
 
 <style>
@@ -91,6 +92,7 @@ import AddToCart from '../components/add-to-cart.jsx';
 </style>
 
 <Layout title="Jamstack Conf 2021 Swag Site">
+  <Autocomplete client:visible="react" placeholder="Try `/slap`" openOnFocus defaultActiveItemId={0} />
   <main class="products">
     <section class="product">
       <div class="image-wrapper">
