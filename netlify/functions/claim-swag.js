@@ -1,15 +1,65 @@
 import fetch from 'node-fetch';
 
 async function sendFaunaRequest({ query, variables }) {
-  // TODO
+  const result = await fetch('https://graphql.us.fauna.com/graphql', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.FAUNA_SERVER_KEY}`,
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  });
+
+  if (!result.ok) {
+    console.error(result);
+    return {
+      statusCode: result.status,
+      body: 'Error sending request to Fauna',
+    };
+  }
+
+  const { data, errors } = await result.json();
+
+  console.log(errors);
+  return data;
 }
 
 async function getClaimByEmail(email) {
-  // TODO
+  const { claim, count } = await sendFaunaRequest({
+    query: `
+      query GetClaimByEmail ($email: String!) {
+        claim: getClaimByEmail(email: $email) {
+          couponCode
+        }
+        count: getClaimCount
+      }
+    `,
+    variables: { email },
+  });
+
+  return { couponCode: claim?.couponCode, count };
 }
 
 async function createClaim(email) {
-  // TODO
+  const data = await sendFaunaRequest({
+    query: `
+      mutation CreateClaim($email: String!, $couponCode: String!) {
+        claim: createClaim(data: { email: $email, couponCode: $couponCode }) {
+          couponCode
+        }
+      }
+    `,
+    variables: {
+      email,
+      couponCode: 'JAMSLAP',
+    },
+  });
+
+  console.log(data);
+
+  return { couponCode: data.claim?.couponCode };
 }
 
 async function getRegistrationByEmail(email) {
@@ -152,18 +202,67 @@ export async function handler(event) {
   const { email } = JSON.parse(event.body);
 
   // 1. Check Fauna for an existing claim and get total claim count
+  const { couponCode, count } = await getClaimByEmail(email);
 
   // 2. If a claim exists, return the discount code
+  if (couponCode) {
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ couponCode }),
+    };
+  }
 
   // 3. If 1,000 claims have been made, return an error
+  if (count > 1000) {
+    return {
+      statusCode: 503,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message:
+          'Unfortunately, you were not one of the first 1,000 people to claim a slap bracelet.',
+      }),
+    };
+  }
 
   // 4. If not, get the Tito registration for the email
+  const registration = await getRegistrationByEmail(email);
 
   // 5. If no registration exists, return an error
+  if (!registration) {
+    return {
+      statusCode: 401,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message:
+          'The provided email was not registered to attend Jamstack Conf.',
+      }),
+    };
+  }
 
   // 6. Associate this email with a Shopify discount code for the bracelet
+  const customer = await loadOrCreateShopifyCustomer(email);
+
+  if (customer === false) {
+    return {
+      statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: 'There was an issue updating Shopify. Please try again.',
+      }),
+    };
+  }
 
   // 7. Store the claim in Fauna with the email/coupon code
+  const claim = await createClaim(email);
 
   // 8. Return the coupon code
   return {
@@ -171,6 +270,6 @@ export async function handler(event) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ message: 'TODO' }),
+    body: JSON.stringify({ couponCode: claim.couponCode }),
   };
 }
