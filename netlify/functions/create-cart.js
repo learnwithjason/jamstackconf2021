@@ -25,8 +25,32 @@ export async function sendShopifyStorefrontRequest({ query, variables }) {
 }
 
 export async function handler() {
+  const data = await sendShopifyStorefrontRequest({
+    query: `
+      mutation CreateCart {
+        cartCreate {
+          cart {
+            checkoutUrl
+            id
+          }
+        }
+      }
+    `,
+    variables: {},
+  });
+
+  if (!data) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'There was a problem creating a cart.' }),
+    };
+  }
+
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: 'TODO' }),
+    body: JSON.stringify({
+      cartId: data.cartCreate?.cart?.id,
+      checkoutUrl: data.cartCreate?.cart?.checkoutUrl,
+    }),
   };
 }

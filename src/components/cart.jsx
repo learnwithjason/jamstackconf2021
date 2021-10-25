@@ -4,12 +4,66 @@ export default function Cart() {
   const [cart, setCart] = useState({ id: null, lines: [] });
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    async function getCart() {
+      let localCartData = JSON.parse(
+        window.localStorage.getItem('jamstackconf:shopify:cart'),
+      );
+
+      if (localCartData) {
+        const existingCart = await fetch(
+          `/api/load-cart?cartId=${localCartData.cartId}`,
+        ).then((res) => res.json());
+
+        setCart({
+          id: localCartData.cartId,
+          checkoutUrl: localCartData.checkoutUrl,
+          estimatedCost: existingCart.cart.estimatedCost,
+          lines: existingCart.cart.lines.edges,
+        });
+
+        return;
+      }
+
+      localCartData = await fetch('/api/create-cart').then((res) => res.json());
+
+      setCart({
+        id: localCartData.cartId,
+        checkoutUrl: localCartData.checkoutUrl,
+        estimatedCost: null,
+        lines: [],
+      });
+
+      window.localStorage.setItem(
+        'jamstackconf:shopify:cart',
+        JSON.stringify(localCartData),
+      );
+    }
+
+    getCart();
+
+    const interval = setInterval(() => {
+      const state = window.localStorage.getItem('jamstackconf:shopify:status');
+
+      if (state && state === 'dirty') {
+        getCart();
+        setOpen(true);
+        window.localStorage.setItem('jamstackconf:shopify:status', 'clean');
+      }
+    }, 500);
+
+    return () => {
+      clearImmediate(interval);
+    };
+  }, []);
+
   function toggleCart() {
     setOpen(!open);
   }
 
   function emptyCart() {
-    // TODO
+    window.localStorage.removeItem('jamstackconf:shopify:cart');
+    window.localStorage.setItem('jamstackconf:shopify:status', 'dirty');
   }
 
   let cost = Number(cart?.estimatedCost?.totalAmount?.amount || 0);
