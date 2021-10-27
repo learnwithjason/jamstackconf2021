@@ -114,14 +114,6 @@ export default function Cart() {
         ) : (
           <p class="no-items">your cart is empty</p>
         )}
-
-        <button
-          onClick={() => {
-            undefinedFunction();
-          }}
-        >
-          UNLEASH CHAOS
-        </button>
       </div>
     </div>
   );
