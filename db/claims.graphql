@@ -1,0 +1,15 @@
+# TODO
+# Claim (email, coupon code)
+# load claim by email
+# load total claim count
+# create claim
+
+type Claim {
+  email: String! @unique
+  couponCode: String!
+}
+
+type Query {
+  getClaimByEmail(email: String!): Claim
+  getClaimCount: Int @resolver(name: "CountClaims")
+}
