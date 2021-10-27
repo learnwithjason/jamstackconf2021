@@ -232,5 +232,22 @@ const { title } = Astro.props;
       made with <span class="heart" role="img" aria-label="love"><img src="https://res.cloudinary.com/jlengstorf/image/upload/f_auto,q_auto,w_50/v1596146333/netlify/netliheart.png" alt="a heart with the Netlify logo pattern in it" /></span> by the Netlify team
     </a>
   </footer>
+
+  <script
+    src="https://browser.sentry-cdn.com/6.13.3/bundle.tracing.min.js"
+    integrity="sha384-bMCNwkS0NNIDdeiv/LpGYQjDzjnZSqqN12IWUUyPlSTLXQloo4EAl9P9mW9AyVzw"
+    crossorigin="anonymous"
+  ></script>
+  <script type="module">
+    Sentry.init({
+      dsn: "https://d7487daff42b436b989eb3d3ab3d147f@o530194.ingest.sentry.io/6038237",
+      integrations: [new Sentry.Integrations.BrowserTracing()],
+
+      // Set tracesSampleRate to 1.0 to capture 100%
+      // of transactions for performance monitoring.
+      // We recommend adjusting this value in production
+      tracesSampleRate: 1.0,
+    });
+  </script>
 </body>
 </html>
