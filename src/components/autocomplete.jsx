@@ -9,8 +9,37 @@ const searchClient = algoliasearch(
   '252979f55a71ee0c9de0adb8f88d5276',
 );
 
+function getQueryPattern(query, flags = "i") {
+  const pattern = new RegExp(
+    `(${query
+      .trim()
+      .toLowerCase()
+      .split(" ")
+      .map((token) => `^${token}`)
+      .join("|")})`,
+    flags
+  );
+  return pattern;
+}
+
 function showMessage(message) {
-  console.log({ message });
+  console.log(message);
+  // Display a message on page
+
+}
+
+
+
+function highlight(text, pattern) {
+  const tokens = text.split(pattern);
+
+  return tokens.map((token) => {
+    if (!pattern.test("") && pattern.test(token)) {
+      return <mark key={0}>{token}</mark>;
+    }
+
+    return token;
+  });
 }
 
 export default function Autocomplete(props) {
@@ -36,6 +65,8 @@ export default function Autocomplete(props) {
             },
           },
           getItems() {
+            const pattern = getQueryPattern(query);
+
             return [
               {
                 label: '/slap',
@@ -54,7 +85,7 @@ export default function Autocomplete(props) {
                   showMessage(data);
                 },
               },
-            ].filter(({ label }) => label.match(new RegExp(query, 'i')));
+            ].filter(({ label }) => pattern.test(label))
           },
           onSelect(params) {
             const { item, setQuery } = params;
